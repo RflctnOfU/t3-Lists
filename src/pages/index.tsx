@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { api } from "@/utils/api";
+import Header from "@/components/Header";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -69,6 +70,7 @@ const Home: NextPage = () => {
   } else
     return (
       <>
+        <Header />
         <main className="flex min-h-screen flex-col items-center justify-center">
           <h1>Welcome Back {sessionData.user.name}</h1>
           <Button onClick={() => void signOut()}>Sign Out</Button>
