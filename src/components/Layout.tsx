@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -7,35 +8,37 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "@/utils/api";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button, buttonVariants } from "./ui/button";
-import { ListForm } from "@/components/listForm";
+// import { ListForm } from "@/components/listForm";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { Input } from "./ui/input";
 type LayoutProps = {
   children: React.ReactNode | JSX.Element;
 };
 
 const Layout = ({ children }: LayoutProps) => {
-  const { data: sessionData } = useSession();
+  // const { data: sessionData } = useSession();
   const addList = api.list.createList.useMutation({
     onSuccess: () => void refecthLists(),
   });
-  // const { data: user } = api.user.getSingleUser.useQuery(
-  //   {
-  //     id: sessionData?.user.id as string,
-  //   },
-  //   {
-  //     enabled: !!sessionData?.user,
-  //   }
-  // );
-
-  // const user = sessionData?.user;
   const { data: lists, refetch: refecthLists } = api.list.getAllLists.useQuery(
     undefined,
     { enabled: true }
@@ -51,6 +54,26 @@ const Layout = ({ children }: LayoutProps) => {
     setListName({ name: value });
   };
 
+  const formSchema = z.object({
+    name: z
+      .string()
+      .min(3, {
+        message: "list name must be at least 3 characters long.",
+      })
+      .max(20),
+  });
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    addList.mutate(values);
+    console.log(values);
+  }
+
   return (
     <>
       <Head>
@@ -59,10 +82,7 @@ const Layout = ({ children }: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main
-        // data-theme="luxury"
-        className="flex min-h-screen flex-col items-center justify-center bg-secondary md:grid md:grid-cols-[20%_80%]"
-      >
+      <main className="flex min-h-screen flex-col items-center justify-center bg-secondary md:grid md:grid-cols-[20%_80%]">
         <ScrollArea className=" flex h-full w-full flex-col gap-3 border p-3 shadow-md">
           {lists?.length &&
             lists?.map((list) => {
@@ -70,7 +90,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <Button
                   asChild
                   key={list.id}
-                  className="border bg-background text-primary transition duration-300 ease-in-out hover:scale-105 hover:bg-accent hover:text-accent-foreground"
+                  className="border bg-accent text-accent-foreground transition duration-300 ease-in-out hover:text-background"
                 >
                   <Link href={`/dashboard/list/${list.id}`}>{list.name}</Link>
                 </Button>
@@ -88,41 +108,36 @@ const Layout = ({ children }: LayoutProps) => {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <ListForm />
-                {/* <DialogFooter>
-                <Button type="submit">Save List</Button>
-              </DialogFooter> */}
+                <Form {...form}>
+                  {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>List Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="item name" {...field} />
+                          </FormControl>
+                          <FormDescription>
+                            Enter a name for your new list
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">Submit</Button>
+                  </form>
+                </Form>
               </div>
             </DialogContent>
           </Dialog>
         </ScrollArea>
         {children}
-        {/* <input type="checkbox" className="modal-toggle" id="form-modal" />
-        <div className="modal">
-          <form
-            onSubmit={formSubmit}
-            className="form-control modal-box gap-1 rounded-md border border-primary bg-primary p-3"
-          >
-            <label htmlFor="listName">List Name:</label>
-            <input
-              type="text"
-              name="listName"
-              className="input-bordered input-secondary input"
-              // value={value}
-              onChange={handleInput}
-            />
-            <div className="flex items-center justify-between">
-              <div className="modal-action">
-                <label htmlFor="form-modal" className="btn mb-2">
-                  Close
-                </label>
-              </div>
-              <button type="submit" className="btn-secondary-content btn mt-3">
-                Add List
-              </button>
-            </div>
-          </form>
-        </div> */}
       </main>
       <Footer />
     </>

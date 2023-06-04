@@ -6,7 +6,9 @@ function List() {
 
   return (
     <Layout>
-      <div>List {router.query.id}</div>
+      <div className="flex items-center justify-center">
+        List {router.query.id}
+      </div>
     </Layout>
   );
 }
