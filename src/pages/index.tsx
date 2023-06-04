@@ -4,8 +4,10 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+
 import { api } from "@/utils/api";
 import Header from "@/components/Header";
+import ListButton from "@/components/ListButton";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -16,6 +18,7 @@ const Home: NextPage = () => {
   //   redirect("/dashboard");
   // }
   // }
+  const { data: lists } = api.list.getAllLists.useQuery();
   if (!sessionData) {
     return (
       <>
@@ -71,10 +74,17 @@ const Home: NextPage = () => {
     return (
       <>
         <Header />
-        <main className="flex min-h-screen flex-col items-center justify-center">
+        <main className="flex min-h-screen flex-col items-center justify-center gap-2">
           <h1>Welcome Back {sessionData.user.name}</h1>
           <Button onClick={() => void signOut()}>Sign Out</Button>
+          <Button asChild>
+            <Link href={"/dashboard"}>Get Started</Link>
+          </Button>
         </main>
+        {/* {lists?.length &&
+          lists.map((list) => {
+            return <ListButton key={list.id} list={list} />;
+          })} */}
       </>
     );
 };
