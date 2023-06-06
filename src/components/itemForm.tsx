@@ -39,7 +39,7 @@ export function ItemForm(props: { refetchItems: () => void }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     addItem.mutate({ id: router.query.id as string, name: values.name });
-    void props.refetchItems();
+    // void props.refetchItems();
   }
   return (
     <Form {...form}>
