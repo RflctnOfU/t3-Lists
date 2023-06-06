@@ -1,4 +1,4 @@
-// make enter list(dialog)/item form components
+// add delete list functionality
 
 // setup color theming
 
