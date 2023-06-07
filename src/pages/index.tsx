@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 import { api } from "@/utils/api";
 import Header from "@/components/Header";
-import ListButton from "@/components/ListButton";
+// import ListButton from "@/components/ListButton";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -23,7 +23,12 @@ const Home: NextPage = () => {
     return (
       <>
         <main className="flex min-h-screen flex-col items-center justify-center">
-          <Button onClick={() => void signIn()}>Sign In</Button>
+          <span>
+            <Button variant="ghost" onClick={() => void signIn()}>
+              Sign In
+            </Button>{" "}
+            to get Started
+          </span>
         </main>
 
         {/* <Head>

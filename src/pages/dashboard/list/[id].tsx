@@ -1,5 +1,5 @@
-import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
+import Layout from "@/components/Layout";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -142,11 +142,11 @@ function List() {
                       key={item.id}
                       className=" flex w-full items-center justify-between space-y-4 border border-secondary text-secondary-foreground shadow-sm shadow-secondary-foreground"
                     >
-                      <div className="flex items-center justify-between">
-                        <Checkbox />
+                      <div className="flex items-center justify-between p-4">
+                        <Checkbox className="" />
                         <p className="ml-4">{item.name}</p>
                       </div>
-                      <div>
+                      <div className="px-4 pb-2">
                         <Button
                           onClick={deleteItem}
                           variant={"destructive"}

@@ -82,15 +82,15 @@ const Layout = ({ children }: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-center bg-secondary md:grid md:grid-cols-[20%_80%]">
-        <ScrollArea className=" flex h-full w-full flex-col gap-3 border p-3 shadow-md">
+      <main className="flex min-h-screen flex-col items-center justify-start bg-secondary md:grid md:grid-cols-[20%_80%]">
+        <ScrollArea className=" flex h-[40rem] w-full flex-col gap-3 rounded-md border p-3 shadow-md">
           {lists?.length &&
             lists?.map((list) => {
               return (
                 <Button
                   asChild
                   key={list.id}
-                  className="border bg-accent text-accent-foreground transition duration-300 ease-in-out hover:text-background"
+                  className="border-accent-foreground bg-accent text-accent-foreground shadow-sm shadow-accent-foreground transition duration-300 ease-in-out hover:text-background"
                 >
                   <Link href={`/dashboard/list/${list.id}`}>{list.name}</Link>
                 </Button>
