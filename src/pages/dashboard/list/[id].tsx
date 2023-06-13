@@ -1,18 +1,16 @@
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
-import Link from "next/link";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/utils/api";
-import { ItemForm } from "@/components/itemForm";
 import {
   Form,
   FormControl,
@@ -27,8 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { z } from "zod";
-import { type SubmitHandler } from "react-hook-form";
-import { useState } from "react";
 import { Icons } from "@/components/icons";
 
 function List() {
@@ -49,7 +45,7 @@ function List() {
       name: "",
     },
   });
-  // const [item, setItem] = useState({});
+
   const list = api.list.getSingleList.useQuery({
     id: router.query.id as string,
   });
@@ -60,9 +56,6 @@ function List() {
   const removeItem = api.item.deleteItem.useMutation({
     onSuccess: void refetchItems(),
   });
-  // const addItem = api.item.createItem.useMutation({
-  //   onSuccess: void refetchItems(),
-  // });
 
   const deleteItem = (e: React.MouseEvent) => {
     const value = e.currentTarget.getAttribute("value");
@@ -71,23 +64,7 @@ function List() {
   };
   function onSubmit(values: z.infer<typeof itemFormSchema>) {
     addItem.mutate({ id: router.query.id as string, name: values.name });
-    // void props.refetchItems();
   }
-  // const formSchema = z.object({
-  //   name: z
-  //     .string()
-  //     .min(3, {
-  //       message: "item name must be at least 3 characters long.",
-  //     })
-  //     .max(20),
-  // });
-
-  // function onSubmit(e: SubmitHandler<{ name: string }>) {
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  //   // const {value} = e.target
-  //   addItem.mutate({ name: item as string, id: router.query.id as string });
-  //   console.log("");
-  // }
 
   return (
     <Layout>
@@ -140,7 +117,7 @@ function List() {
                   return (
                     <div
                       key={item.id}
-                      className=" flex w-full items-center justify-between space-y-4 border border-secondary text-secondary-foreground shadow-sm shadow-secondary-foreground"
+                      className=" flex w-full items-center justify-between space-y-4 rounded border border-secondary text-secondary-foreground shadow-sm shadow-secondary-foreground"
                     >
                       <div className="flex items-center justify-between p-4">
                         <Checkbox className="" />

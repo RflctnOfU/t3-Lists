@@ -43,6 +43,9 @@ const Layout = ({ children }: LayoutProps) => {
     undefined,
     { enabled: true }
   );
+  const deleteList = api.list.deleteList.useMutation({
+    onSuccess: () => void refecthLists(),
+  });
   const [listName, setListName] = useState({ name: "" });
   const formSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,18 +90,28 @@ const Layout = ({ children }: LayoutProps) => {
           {lists?.length &&
             lists?.map((list) => {
               return (
-                <Button
-                  asChild
-                  key={list.id}
-                  className="border-accent-foreground bg-accent text-accent-foreground shadow-sm shadow-accent-foreground transition duration-300 ease-in-out hover:text-background"
-                >
-                  <Link href={`/dashboard/list/${list.id}`}>{list.name}</Link>
-                </Button>
+                <div key={list.id} className="flex justify-between gap-2">
+                  <Button
+                    asChild
+                    // key={list.id}
+                    className="border-accent-foreground bg-accent text-accent-foreground shadow-sm shadow-accent-foreground transition duration-300 ease-in-out hover:text-background"
+                  >
+                    <Link href={`/dashboard/list/${list.id}`}>{list.name}</Link>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      deleteList.mutate({ id: list.id });
+                    }}
+                  >
+                    Delete List
+                  </Button>
+                </div>
               );
             })}
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="secondary">Add List</Button>
+              <Button variant="outline">Add List</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>

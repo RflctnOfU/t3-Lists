@@ -1,24 +1,15 @@
 import { type NextPage } from "next";
-import { redirect } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import { api } from "@/utils/api";
 import Header from "@/components/Header";
-// import ListButton from "@/components/ListButton";
 
 const Home: NextPage = () => {
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
-  // const user = sessionData?.user.id;
-  // const handleLogin = () => {
-  // if (user) {
-  //   redirect("/dashboard");
-  // }
-  // }
-  const { data: lists } = api.list.getAllLists.useQuery();
+
+  // const { data: lists } = api.list.getAllLists.useQuery();
   if (!sessionData) {
     return (
       <>
