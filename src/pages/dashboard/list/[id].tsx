@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import { useState } from "react";
 
+import { api } from "@/utils/api";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -10,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@/utils/api";
 import {
   Form,
   FormControl,
@@ -20,17 +21,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import Layout from "@/components/Layout";
+import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { z } from "zod";
 import { Icons } from "@/components/icons";
 
 function List() {
+  const [itemName, setItemName] = useState("");
+  const { toast } = useToast();
   const router = useRouter();
   console.log(router.query);
   const addItem = api.item.createItem.useMutation();
+  // const item = api.item.getItem.useQuery();
   const itemFormSchema = z.object({
     name: z
       .string()
@@ -42,7 +47,7 @@ function List() {
   const form = useForm<z.infer<typeof itemFormSchema>>({
     resolver: zodResolver(itemFormSchema),
     defaultValues: {
-      name: "",
+      name: itemName,
     },
   });
 
@@ -61,9 +66,16 @@ function List() {
     const value = e.currentTarget.getAttribute("value");
     console.log("deleted");
     removeItem.mutate({ id: value as string });
+    toast({
+      variant: "destructive",
+      description: "Item has been deleted",
+    });
   };
   function onSubmit(values: z.infer<typeof itemFormSchema>) {
+    // setItemName(values.name);
     addItem.mutate({ id: router.query.id as string, name: values.name });
+
+    // setItemName("");
   }
 
   return (
@@ -93,6 +105,7 @@ function List() {
                         <FormLabel>Item Name</FormLabel>
                         <FormControl className="">
                           <Input
+                            // key={itemName}
                             className="mr-2 pr-2"
                             placeholder="item name"
                             {...field}

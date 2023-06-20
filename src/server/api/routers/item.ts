@@ -11,6 +11,15 @@ import {
 } from "@/server/api/trpc";
 
 export const itemRouter = createTRPCRouter({
+  getItem: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.item.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
   getItems: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {

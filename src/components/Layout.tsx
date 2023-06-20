@@ -3,12 +3,12 @@ import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState, FormEvent, FormEventHandler } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "@/utils/api";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Button, buttonVariants } from "./ui/button";
-// import { ListForm } from "@/components/listForm";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +36,7 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   // const { data: sessionData } = useSession();
+  // const router = useRouter();
   const addList = api.list.createList.useMutation({
     onSuccess: () => void refecthLists(),
   });
@@ -102,6 +103,7 @@ const Layout = ({ children }: LayoutProps) => {
                     variant="destructive"
                     onClick={() => {
                       deleteList.mutate({ id: list.id });
+                      window.location.replace("/dashboard");
                     }}
                   >
                     Delete List
