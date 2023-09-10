@@ -1,16 +1,34 @@
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import Nav from "@/components/Nav";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 function Header() {
+  const { data: sessionData } = useSession();
   return (
-    <header className="sticky top-0 z-40 w-full bg-background shadow shadow-secondary-foreground">
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+    <header className="sticky top-0 z-40 w-full bg-background font-praktika  text-xl shadow shadow-secondary-foreground">
+      <div className="container flex h-24 items-center space-x-4 sm:justify-between sm:space-x-0">
         <Nav />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
+            {sessionData && (
+              <Button
+                variant={"secondary"}
+                onClick={() => {
+                  void signOut();
+                  window.location.replace("/");
+                }}
+              >
+                Sign Out
+              </Button>
+            )}
+            <Link
+              className={buttonVariants({ size: "sm", variant: "ghost" })}
+              href={"/"}
+            >
+              Home
+            </Link>
             <Link
               href="https://github.com/RflctnOfu"
               target="_blank"

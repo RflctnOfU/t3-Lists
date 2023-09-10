@@ -3,9 +3,9 @@ import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState, FormEvent, FormEventHandler } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+// import { useRouter } from "next/router";
+import { useState } from "react";
+// import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "@/utils/api";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button } from "./ui/button";
@@ -37,6 +37,7 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   // const { data: sessionData } = useSession();
   // const router = useRouter();
+  const [open, setOpen] = useState(false);
   const addList = api.list.createList.useMutation({
     onSuccess: () => void refecthLists(),
   });
@@ -47,16 +48,16 @@ const Layout = ({ children }: LayoutProps) => {
   const deleteList = api.list.deleteList.useMutation({
     onSuccess: () => void refecthLists(),
   });
-  const [listName, setListName] = useState({ name: "" });
-  const formSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    addList.mutate(listName);
-    setListName({ name: "" });
-  };
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setListName({ name: value });
-  };
+  // const [listName, setListName] = useState({ name: "" });
+  // const formSubmit = (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   addList.mutate(listName);
+  //   setListName({ name: "" });
+  // };
+  // const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { value } = e.target;
+  //   setListName({ name: value });
+  // };
 
   const formSchema = z.object({
     name: z
@@ -76,6 +77,7 @@ const Layout = ({ children }: LayoutProps) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     addList.mutate(values);
     console.log(values);
+    setOpen(false);
   }
 
   return (
@@ -86,32 +88,9 @@ const Layout = ({ children }: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-start bg-secondary md:grid md:grid-cols-[20%_80%]">
-        <ScrollArea className=" flex h-[40rem] w-full flex-col gap-3 rounded-md border p-3 shadow-md">
-          {lists?.length &&
-            lists?.map((list) => {
-              return (
-                <div key={list.id} className="flex justify-between gap-2">
-                  <Button
-                    asChild
-                    // key={list.id}
-                    className="border-accent-foreground bg-accent text-accent-foreground shadow-sm shadow-accent-foreground transition duration-300 ease-in-out hover:text-background"
-                  >
-                    <Link href={`/dashboard/list/${list.id}`}>{list.name}</Link>
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      deleteList.mutate({ id: list.id });
-                      window.location.replace("/dashboard");
-                    }}
-                  >
-                    Delete List
-                  </Button>
-                </div>
-              );
-            })}
-          <Dialog>
+      <main className="my-4 flex h-screen flex-col items-center justify-start bg-background font-praktika md:grid md:grid-cols-[20%_80%]">
+        <ScrollArea className="flex h-full w-full flex-col gap-3 rounded-md border p-3 shadow-md">
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">Add List</Button>
             </DialogTrigger>
@@ -151,6 +130,32 @@ const Layout = ({ children }: LayoutProps) => {
               </div>
             </DialogContent>
           </Dialog>
+          {lists?.length === 0 ? (
+            <p className="text-center text-2xl">Create a list to get started</p>
+          ) : (
+            lists?.map((list) => {
+              return (
+                <div key={list.id} className="flex gap-2">
+                  <Button
+                    asChild
+                    // key={list.id}
+                    className="w-full rounded-full border-accent-foreground bg-primary text-primary-foreground shadow-sm shadow-primary-foreground transition duration-300 ease-in-out hover:text-background"
+                  >
+                    <Link href={`/dashboard/list/${list.id}`}>{list.name}</Link>
+                  </Button>
+                  {/* <Button
+                    variant="destructive"
+                    onClick={() => {
+                      deleteList.mutate({ id: list.id });
+                      window.location.replace("/dashboard");
+                    }}
+                  >
+                    Delete List
+                  </Button> */}
+                </div>
+              );
+            })
+          )}
         </ScrollArea>
         {children}
       </main>

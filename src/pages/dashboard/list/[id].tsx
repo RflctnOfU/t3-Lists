@@ -55,6 +55,8 @@ function List() {
     id: router.query.id as string,
   });
 
+  const removeList = api.list.deleteList.useMutation();
+
   const { data: items, refetch: refetchItems } = api.item.getItems.useQuery({
     id: router.query.id as string,
   });
@@ -77,6 +79,10 @@ function List() {
 
     // setItemName("");
   }
+  function deleteList() {
+    removeList.mutate({ id: router.query.id as string });
+    window.location.replace("/dashboard");
+  }
 
   return (
     <Layout>
@@ -89,6 +95,9 @@ function List() {
             <div>
               <CardTitle>{list.data?.name}</CardTitle>
               <CardDescription>List:</CardDescription>
+              <Button variant="destructive" onClick={deleteList}>
+                Delete
+              </Button>
             </div>
             <div>
               <Form {...form}>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,8 @@ export function ItemForm(props: { refetchItems: () => void }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     addItem.mutate({ id: router.query.id as string, name: values.name });
-    // void props.refetchItems();
+    form.reset({ name: "" });
+    void props.refetchItems();
   }
   return (
     <Form {...form}>

@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z
@@ -27,7 +28,8 @@ const formSchema = z.object({
     .max(20),
 });
 
-export function ListForm(refetchLists) {
+export function ListForm(refetchLists: () => any) {
+  // const [open, setOpen] = useState(false)
   const list = api.list.createList.useMutation({
     onSuccess: () => void refetchLists(),
   });
